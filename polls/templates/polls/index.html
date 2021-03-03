@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            font-size: 62.5%;
+        }
+        ul {
+            list-style: none;
+        }
+        li {
+            font-size: 1.8rem;
+            display: inline-block;
+            padding: 1.5rem 3rem;
+            border: 1px solid #eee;
+            border-radius: 1rem;
+            box-shadow: 0 .3rem .9rem rgba(0,0,0,0.2);
+            margin: 1rem;
+        }
+    </style>
+</head>
+<body>
+    {% if question_list %}
+    <ul>
+
+
+        {% for question in question_list %}
+            <li><a href="{% url 'polls:detail' question.pk %}">{{ question.question_title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% else %}
+        <p>There is no questions</p>
+{% endif %}
+</body>
+</html>
