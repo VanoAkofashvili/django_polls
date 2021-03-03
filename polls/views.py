@@ -1,8 +1,11 @@
-from django.http import HttpResponse, Http404
-from .models import Question
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.urls import reverse
+
+from .models import Question, Choice
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
-import json
+from django.views import generic
+
 
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')
@@ -24,14 +27,23 @@ def detail(request, question_id):
     })
 
 
+def results(request, question_id):
+    question = Question.objects.get(pk=question_id)
+    return render(request, 'polls/results.html', context={
+        'question': question
+    })
+
+
 def vote(request, question_id):
     question = get_object_or_404(Question, id=question_id)
-    print(request.POST["choice"])
 
-    if request.method == "POST":
-        return HttpResponse('method is post')
-    elif request.method == "GET":
-        return HttpResponse("method is get")
-    else:
-        return HttpResponse("something, unusual method")
-
+    try:
+        choice = question.choice_set.get(pk=request.POST["choice"])
+    except (KeyError, Choice.DoesNotExist):
+        return render(request, 'polls/detail.html', {
+            'question': question,
+            'error_message': "You didn't select a choice.",
+        })
+    choice.votes += 1
+    choice.save()
+    return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
