@@ -1,8 +1,8 @@
 from django.http import HttpResponse, Http404
 from .models import Question
 from django.template import loader
-from django.shortcuts import render
-
+from django.shortcuts import render, get_object_or_404
+import json
 
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')
@@ -25,5 +25,13 @@ def detail(request, question_id):
 
 
 def vote(request, question_id):
-    return HttpResponse('vote function in views.py')
+    question = get_object_or_404(Question, id=question_id)
+    print(request.POST["choice"])
+
+    if request.method == "POST":
+        return HttpResponse('method is post')
+    elif request.method == "GET":
+        return HttpResponse("method is get")
+    else:
+        return HttpResponse("something, unusual method")
 
